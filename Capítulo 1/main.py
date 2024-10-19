@@ -1,5 +1,7 @@
 """Um exemplo de algumas análises de dados em uma rede de amigos"""
 
+from collections import Counter
+
 users = [{"id": 0, "name": "Hero"},
          {"id": 1, "name": "Dunn"},
          {"id": 2, "name": "Sue"},
@@ -44,3 +46,19 @@ num_friends_by_id = [(user["id"], number_of_friend(user)) for user in users]
 
 num_friends_by_id.sort(key=lambda id_and_friends: id_and_friends[1], reverse=True)
 print(num_friends_by_id)  # Primeiro o Id da pessoa e depois a quantidade de amigos
+
+def foaf_ids(user):
+    """Essa função retorna os amigos dos amigos
+    de um usuário"""
+    return [foaf_id for friend_id in friendships[user["id"]]
+            for foaf_id in friendships[friend_id]]
+
+def friends_of_friends(user):
+    user_id = user["id"]
+    return Counter(foaf_id for friend_id in friendships[user_id]
+            for foaf_id in friendships[friend_id]
+            if foaf_id != user_id and
+            foaf_id not in friendships[user_id])
+
+for user in users:  #Informa a quantidade de amigos em comum por usuário
+    print(friends_of_friends(user))
